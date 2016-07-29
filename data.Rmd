@@ -1,8 +1,6 @@
 ---
 title: "Data analysis"
-author: 
-- name: "Zolt&aacute;n Puha"
-  affiliation: University of Amsterdam
+author: "Zolt&aacute;n Puha"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output:
   pdf_document:
@@ -159,7 +157,7 @@ Besides two big drops in the number of downloads (the data provided came in 3 ch
 
 The next graph shows the number of downloads per hour during the observed period. As it could be assumed, the number reaches its peak in the late-afternoon. This can be because students arrive at home at around that time and start to search for books that they would like to download.
 
-I checked for discrepancy in the data, by looking at the hour of downloads. The time in the dataset belongs to the server, which makes it harder to derive the overall behaviour per hour. However, the same trend can be seen 
+I checked for discrepancy in the data, by looking at the hour of downloads. The time in the dataset belongs to the server, which makes it harder to derive the overall behaviour per hour. However, the same trend can be seen, through all of the countries. Here, I included three countries. Germany is the closest to the server from these three countries and it shows an expected behavior: the number of downloads are small during the night and increase during the daytime.
 
 ```{r, echo=FALSE, message=FALSE}
 hourplots
@@ -215,7 +213,7 @@ cor2
 
 This shows, that downloading a book is not necesseraly because people do not have enough money to buy the textbooks. Countries with higher GDP have better education, students are most likely have easy access (especially in the "developed" countries on the graph) for books either through a library or by having enoguh money to buy it. When looking at the number of downloads divided by the population of a country (in millions), Southern- and Eastern-European countries are over-represented. In these countries, education changed a lot in the recent years and there was an impactful regime change. 
 
-```{r, echo=FALSE, message=FALSE}
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
 cor_pop
 ```
 
@@ -262,15 +260,15 @@ As the rent prices are only available in the US, I also checked, whether there i
 After these regressions, I used the above described hurdle model. The estimation of the model can be seen in the following table. 
 
 
-```{r, echo=FALSE, message=FALSE}
-stargazer(modelHurdle, zero.component = TRUE)
+```{r, results="asis",  echo=FALSE, message=FALSE}
+stargazer(modelHurdle, type='latex', zero.component = TRUE, header = FALSE)
 ```
 
 First, have a look at the zero-hurdle part of the model. The coefficients of the regression show us, that a higher GDP increases the probability that a book will be downloaded in a country, while the rent price has no effect on this process. The different categories all except one don't have significantly higher chance to be downloaded than IT books, which is the benchmark. 
 At the regions, the benchmark is Australia and New Zealand and the majority of the other regions, that have a significant effect, have a higher chance to download a book. When looking at the interactions, between the regions and the GDP we can see, that a higher GDP would, ceteris paribus, lower the chances of a book to be downloaded. This is in line with Karaganis' paper (CITE), that the downloads are coming from the developing countries, as they are poorer than the developed ones.
 
-```{r, echo=FALSE, message=FALSE}
-stargazer(modelHurdle)
+```{r, results="asis", echo=FALSE, message=FALSE}
+stargazer(modelHurdle, type='latex', header = FALSE)
 ```
 
 Now look at the count part of the model. From the interactions we can see that the number of downloads usually increase, when a price of a book is higher, only in the 9th category (History) they decrease.
@@ -283,7 +281,7 @@ stargazer(expCoef)
 This table shows, that the baseline odds of having a download for a book vs a zero download is 0.02. This odds is increased 1.18 times with 1% increase in GDP and 1.003 times with a 1% increase in rent price. (MORE needs to come here)
 
 
-
+# Summary and extensions
 
 
 
