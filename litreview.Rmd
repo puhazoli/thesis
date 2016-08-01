@@ -2,6 +2,7 @@
 # Introduction
 Illegal downloading is a common and well-known phenomenon in today's Internet society. The broad downloading of different type of goods started at the end of the 20th century, but the sudden growth of Internet introduced it to everyday life. Today software, songs, films, books and nearly anything what exists online can be downloaded from different sites. 
 
+<<<<<<< HEAD
 While the piracy of software, music and films are relatively well-studied ( @gopal2004behavioral, @rodman2006music, @koklic2014three), the research regarding (scientific)-book downloading is quite scarce. In this thesis, my aim is to look at the motives and behavior behind downloading books illegally from a Russian shadow-library, Library Genesis, especially analyzing the behavior of University students. 
 
 I use a rich dataset, with more than 1 million downloaded books for a time span of 5 and a half months. This allows me to get robust results and to draw conclusions about the real users of these websites. I believe this area is really interesting and should be understood more deeply, as the motive behind why students are downloading textbook is not clear. It also poses heavy copyright issues, while publishers realize significant losses. On the other hand, some argue, that knowledge should be free and scientific papers or books should be made available free of charge [^1].
@@ -13,6 +14,19 @@ In this thesis, I am looking at a specified part of the book industry: scientifi
 With the help of this thesis, I can give insights to the behavior of graduate downloaders and shed light on different interesting questions. I will first take a look at the descriptive statistics of the data and check, if there are any discrepancies in it. After that, I will use OLS regressions and correlations to see the basic realtionship between the variables. In the main model of the thesis, I will use a hurdle regression, to see how macro variables, price and the topic of the book effects the number of downloads. 
 
 The thesis' main question is, whether book's price has an effect on the number of downloads. I am also investigating if a difference can be seen between developed and developing countries. 
+=======
+While the piracy of software, music and films are relatively well-studied ( @gopal2004behavioral, @rodman2006music, @koklic2014three), the research regarding (scientific)-book downloading is quite scarce. In this thesis, my aim is to look at the motives and behavior behind downloading books illegally from a Russian website, Library Genesis, especially analyzing the behavior of University students. 
+
+I use a rich dataset, with more than 1 million downloaded books for a time span of 5 and a half months. This allows me to get robust results and to draw conclusions about the real users of these websites. I believe this area is really interesting and should be understood more deeply, as it poses heavy copyright issues, while publishers realize significant losses. On the other hand, some argue, that knowledge should be free and scientific papers or books should be made available free of charge [^1].
+
+[^1]: https://archive.org/stream/GuerillaOpenAccessManifesto/Goamjuly2008_djvu.txt Guerilla Open Access Manifesto, Aaron Swartz.
+
+In this thesis, I am looking at a specified part of the book industry: scientific books and textbooks, for which the demand is the highest among University students. I have chosen this subtopic, because with the available dataset, I believe it ispossible to distinguish graduate students from everyday downloaders and also, because as a current Masters student, I would like to analyze my fellow students. Downloading from peer-to-peer (P2P) networks is a common thing among students, as one of their primary source for knowledge are the expensive textbooks. Students are really sensitive for prices, as the cost of University is high without the books as well (@heller1997student). 
+
+With the help of this thesis, I hope I can give insights to the behavior of graduate downloaders and shed light on different interesting questions.
+
+The thesis' main question is, whether book's price or has an effect on the number of downloads and can a difference be seen between developed (see Part III.) and developing countries in the significance and size of the explanatory variables.
+>>>>>>> 9603dde0a62f4938cc3b71bce6b9c51cbc59a229
 
 The setup of the thesis follows like this: In Part II I will describe how piracy is defined, take a short look at its history and summarize some findings from recent papers in the topic of illegal Internet downloading. In Part III I will describe the available dataset and the website it was acquired from, present the data's possible shortcomings and differences from previously used datasets. In Part IV I present basic exploratory data analysis to have a good overview of the dataset, then have a look at some regressions trying to understand the motives behind downloading. Part V discusses the thesis and gives recommendations for further development. 
 
@@ -24,12 +38,22 @@ Piracy is a part of human societies since the origins of civilization (@johns201
 
 There are few definitons of piracy circulating in the academia, but according to @karaganis2011media, piracy is "ubiquitous, increasingly
 digital practices of copying that fall outside the boundaries of
+<<<<<<< HEAD
 copyright law". From this definition we can see that piracy is an illegal act, where somebody copies or steals an intellectual property of somebody else. Also, Karaganis suggests, that we should distinguish piracy from  counterfeiting on the origin of the fake product's value. Pirated contents' value comes from reproducing the text, such as books, but also music and films fall under this criterium as well. Downloading an illegal copy from the Internet or buying a pirated movie on the flea market has its value in the text, lyrics or film and not in the shape, colour or condition of their casings. However, counterfeited product's value lays in their same shape, branding, colours with the original product. On the other hand, some does not make this difference between piracy and counterfeiting (@jacobs2001nightmare). This thesis concentrates on piracy, as I will be looking at illegal downloads of books.
 
 ## Piracy of books
 
 Piracy of the books started with Gutenberg's revolution (@johns2010piracy), as people were able to copy books within a reasonable time, without the author's permission - most of the time, without the knowledge of the original writer. During the (Pre-)Modern Era, the copyrights of the books were only valid for a city or a little area and other printers could freely print books from other cities. The owners of the copyright's of these books realised this issue, and started to establish connections through cities and ask help from their state to protect their rights. This lead to the establishment of institutions like "The Stationers' register" in London, which contained printing right of books' (today a patent register has the same aim). 
 This process heavily involved the law and politics, and during an era, when people were trying to deregularize everything, this topic became a well-known one in the whole society. Also, for authors and readers, this system was not beneficiary and pirated books started to circulate in the book shops.
+=======
+copyright law". From this definition we can see that piracy is an illegal act, where somebody copies or steals an intellectual property of somebody else. Also, Karaganis suggests, that we should distinguish piracy from  counterfeiting on the origin of the fake product's value. Pirated contents' value comes from reproducing the text, such as books, but it can  be easily seen, that music and films fall under this criterium as well. Downloading an illegal copy from the Internet or buying a pirated movie on the flea market has its value in text, music or film and not in the shape, colour or condition of their casings. However, counterfeited product's value lays in their same shape, branding, colours with the original product. On the other hand, some does not make this difference between piracy and counterfeiting (@jacobs2001nightmare). This thesis concentrates on piracy, as I will be looking at illegal downloads of books.
+
+
+## Piracy of books
+
+Piracy of the books started with Gutenberg's revolution (@johns2010piracy), as people were able to copy books without the author's permission - most of the time, without the knowledge of the original writer. During the (Pre-)Modern Era, the copyrights of the books were only valid for a city or a little area and other printers could freely print books from other cities. The owners of the copyright's of these books realised this issue, and started to establish connections through cities and ask help from their state to protect their rights. This lead to the establishment of institutions like "The Stationers' register" in London, which contained printing right of books' (think of it as a patent register). 
+This process heavily involved the law and politics, and during an era, when people were trying to deregularize everything, this topic became a well-known one in the whole society. Also, for authors and readers, this system was not beneficiary and pirated books started to circulate in the book shops. 
+>>>>>>> 9603dde0a62f4938cc3b71bce6b9c51cbc59a229
 
 Pirated texts in this time were not only competitors on their own market (@balazs2011coda), but foreign printed copies entered other markets as well. Pirates were always there to exploit the shortcomings of the law and provide a cheaper, yet legal way to fulfill the demand for books. Moreover, small publishers started to surface who were really effective on the market: they were selling these books for a lower price, not taking the regulations of the government into account and believed in mass-printing: profiting little on one book, but selling lots of books.
 
@@ -45,6 +69,7 @@ was signed (@balazs2011coda).
 
 From this point on, pirates had a harder task to distribute their copies, however in some countries i.e. Russia, this treaty was not in effect, so piracy was more alive there than ever before. The demand for books was skyrocketing in The Soviet Union, because this was the primary tool for entertainment (@bodo2014short). On the other hand, the Soviet regime applied a very strict censorship which lead to a shortage of available books. As the USSR had not entered any treaties, people were also "free" to distribute translations of books - however, these were mainly released into the shadow market, as the censorship banned these books. With the advance of technology, other methods entered the pirates' tools, such as Xerox machines and CD-ROMs (CITE).
 
+<<<<<<< HEAD
 As the Internet started to establish itself, these shadow libraries, floating around on CDs were uploaded and gathered into online databases, where everyone was available to download them. One of the biggest site storing these books was Gigapedia, later called library.nu. This sites' aim was to gather all the offline, but digitally available books and organize them into a giant, online library. Library.nu closed down after a successful injuction by several publishers, however its library was merged into another page, Library Genesis, also known as LibGen. LibGen's catalogue is mirrored to more sites, who can easily add their own collection to the existing one. The mission of the site is to 
 * collect valuable academic literatue
 * build and maintain a community, who helps the inflow of the books and who can improve the quality of the uploaded documents
@@ -54,12 +79,19 @@ LibGen's collection was Russian by default, but from the merge of library.nu, En
 ## Piracy on the internet
 
 Piracy on the Internet started in the 90's with illegal downloading of software. In that era, the price's of software were high, but a lot of people wanted to use them - for free. This led to the birth of a new kind of hacker who was breaking up the security of the original software and uploaded these "cracks" to the internet. This type of software cracking soon became a phenomena, different groups were established whose solemn aim was to crack these programs. They started to race with each other, trying to be the first to crack a program and collect the pride coming along with it. Of course, software makers saw this process and wanted to stop it. The security of software became harder to crack and firms invested more into securing them.
+=======
+As the internet started to establish itself, these shadow libraries, floating around on CDs were uploaded and gathered into online databases, where everyone was available to download them. One of the biggest site storing these books was Gigapedia, later called library.nu. This sites' aim was to gather all the offline, but digitally available books and organize them into a giant, online library. Library.nu closed down after a successful injuction by several publishers, however its library was merged into another page, Library Genesis.
+>>>>>>> 9603dde0a62f4938cc3b71bce6b9c51cbc59a229
 
 The second industry, that was affected deeply by piracy was music. As songs were smaller and thus more easily redistributable than software, people started to upload them to internet, without dealing with copyright. The leading service in providing this kind of opportunity was Napster. Napster allowed people to download music in MP3, a worser quality then they could listen to it on CDs, but these files were extremely small and they were available for MP3 players. The music industry was slow to react to the ascendense of Napster and by the time they forced Napster to shut down, people got used to downloading free music. The first (partly) successful counteraction to Napster was Apple's iTunes, which made songs available to download for a small price. However, Napster totally changed the formerly CD sales lead music industry and redefinied piracy as well.
 
 Not much later, films became one of the primary targets of pirates. First, the quality of these copies were really bad, as pirates wanted to keep the size of downloaded films low. They were made by using a handy-camera to record films from cinemas, but later good quality copies began to surface - usually weeks before releasing them on DVD or Blu-ray and occasionnaly even before releasing the film to cinemas. 
 
+<<<<<<< HEAD
 The fourth industry where pirates became a real concern were books. Before e-book readers, there were no real options, but the screen of the computer to read downloaded books. As for a lot of people, this was an issue, they purchased the books or downloaded it and printed it (nearly for the same price as the original would cost). However, after the "Oprah boom" of (Amazon) e-readers people had the opportunity to read these books and downloads started to rise. 
+=======
+Piracy on the Internet started in the 90's with illegal downloading of software. In that era, the price's of software were high, but a lot of people wanted to use them - for free. This led to the birth of a new kind of hacker who was breaking up the security of the original software and who uploaded these "cracks" to the internet. This type of software cracking soon became a phenomena, different groups were established whose solemn aim was to crack these programs. They started to race with each other, trying to be the first to crack a program and collect the pride coming along with it. Of course, software makers saw this process and wanted to stop it. The security of software became harder to crack and firms invested more into securing them.
+>>>>>>> 9603dde0a62f4938cc3b71bce6b9c51cbc59a229
 
 ## Textbook piracy
 

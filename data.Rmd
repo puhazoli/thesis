@@ -1,0 +1,300 @@
+---
+title: "Data analysis"
+author: "Zolt&aacute;n Puha"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output:
+  pdf_document:
+    highlight: tango
+    number_sections: yes
+    toc: yes
+  html_document:
+    toc: yes
+header-includes: \usepackage{placeins} \usepackage{fancyhdr} \usepackage{setspace}
+  \usepackage{chngcntr} \usepackage{microtype} \onehalfspacing \counterwithin{figure}{section}
+  \counterwithin{table}{section}
+linkcolor: black
+geometry: margin = 1.2in
+fontsize: 12pt
+urlcolor: black
+---
+#Data
+
+In this paper, I will analyze a database acquired from on of the biggest peer-to-peer books sharing sites. The database consists of two parts: 
+
+* All of the available books from LibGen's catalogue, 
+* All the downloads from a mirror of the website (IP log).
+
+Library Genesis (also known as LibGen) is one of the biggest sites, where people can download books freely. The database contains mostly scientific books and text books, but there are other books that can be found in the library of the site, everyday literature, comics and scientific papers as well. In this analysis, I only use the database of the scientific books. 
+The IP log data contains information about both the downloader and the book: the IP-address from where the book was downloaded and an ID of downloaded book. The catalogue lists all of the available books, with their ID. 
+
+First, look at how big the LibGen database was at the end of the analyzed period. It cointained a total of 1987987 books, which means it nearly doubled its size during a year, as in 2014 it is reported it contained a little over one million books. (CITE)
+However, not all the books were downloaded from the mirror I am analysing. Counting all of the downloads, 967130 books were downloaded. 
+
+In order to be able to research only my selected sub-group of books, the textbooks, I needed to restrict the database (explained later). The final, analyzed database contained a total of 348277 downloads. 
+
+## Additional data
+
+Besides the already described database, I connected several other resources in order to gain more insight from the data and be able to answer more complex questions. Here, I would like to describe these data resources, show how could they help in the analysis and also discuss their possible shortcomings. 
+
+First, I connected the prices of the books from Amazon from the period of analysis. I used the prices of the USA Amazon, as it contains the majority of the books, however lacks the prices of most of the Russian language books. However, I do not think this affects the analysis in a drastic way, as demand for Russian books is close to 0 outside of Russia. 
+
+The prices from Amazon come in many format: prices of _paperback_ books, _hardcover_ books, _e-books_ and all in new and used format. In the analysis, I used different of type of prices: the rent and list price of new paperback books and the list and rent price of e-books. 
+
+As some books occured in the original database more than once but with different IDs, because of ie: different editions of the e-book version appeared as another book or a newer print of the book appeared with another ID, I selected always the lowest available price for the different editions. I chose this solution, because I assume the demand side is really price sensitive.
+
+There are two considerable shortcomings of the Amazon data. First, it only contains prices for the USA market as it would be really hard to connect all of the countries prices to the database, I assume that these prices are close to the prices of other countries. Also, the rent prices I am looking at are only available in the USA, so they are not comparable to other countries. 
+
+The other problem is that the prices are only from Amazon. Books are available at several places such as online and offline bookstores or second-hand shops. As the biggest influencer of the textbook market is USA, I assume that the prices of other shops do not differ significantly from the prices of Amazon.
+Besides the prices of the analyzed period, I also connected the prices of the same books from 2013, in order to see the change of prices of books. 
+
+
+Secondly, I added the missing metadata to the books, as the original database was quite imperfect. I tried to match at least the title and author of the book, as in lot of cases the full metadata was unavailable. However, where it was available, it contains several features of the book: publisher, length, date of publication or number of the edition of the book.
+
+Also, I matched another database to the book's, the classification of the books. I used the Library of Congress' system, the Dewey Decimal Classification (DDC) [^dewey] . The DDC is the most frequently used classification system. As the official overview of the system says : "_The DDC is built on sound principles that make it ideal as a general knowledge organization tool: meaningful notation in universally recognized Arabic numerals, welldefined
+categories, well-developed hierarchies, and a rich network of relationships among topics. In the DDC, basic classes are organized by disciplines or fields of study.
+At the broadest level, the DDC is divided into ten main classes, which together cover the
+entire world of knowledge. Each main class is further divided into ten divisions, and each
+division into ten sections (not all the numbers for the divisions and sections have been
+used)._"
+
+[^dewey]: http://www.oclc.org/content/dam/oclc/dewey/versions/print/intro.pdf
+
+This type of approach gives me the chance to be able to analyze the effects of different disciplines of books, and see if the variables have different effects for books from different disciplines.
+
+The disciplines and there DDCs are:
+
+```{r, results='asis',echo=FALSE}
+stargazer(ddctable, header=FALSE, rownames = FALSE, summary = FALSE)
+```
+The original databse contains another aspect of the available books, the attributes of the files. These attributes are mainly dummies, indicating the format of the book. It contains, among other things, whether a book is paginated, the file is scanned version of the book or an original e-book release and extension of the available copy. The extension can have a significant role, when people decide to download a book or not, as a PDF version is easy to open on any device without additional programs, the e-book version (epub, pdb) require additional conversions or programs on computers or tablets and are not compatible with all e-book readers.
+
+I connected another database to the downloaded books' data, which contained the exit nodes for TOR addresses. TOR is an open network, where users can hide their real IP address and block network surveillance in order to keep their privacy protected.
+I acquired the IP addresses, that were serving as exit nodes for the TOR network between the date of the first and last download and set up a flag, if a download was coming from that IP-address [^1] .
+
+[^1]: https://www.torproject.org/
+
+I also connected an other IP-address related database, the identified address range of Universities from all over the world. (citation!!Greshake) I used this data to identify downloaders who are downloading the books from their Universities. The database is freely available and used several resources but 2 years old, so it might lack some data and some of the ranges in it might be outdated, but this was the only available database with this type and amount of data. It contains more than 5800 different Universtities. 
+
+##Exploratory data analysis
+First, I would like to check, whether my assumption that books with available rent price are mainly for University students is true or not.
+
+To begin the analysis, I excluded some of the downloads based on different aspects. 
+
+1. The downloads that were marked as spam downloads from the admins of the site. These downloads were marked as "false" downloads, because for example previous downloads from that IP-addresses were spams.
+
+2. I also excluded those downloads, that had more than two download request from the same IP-address for the same book in a one-hour time span. This is required, because there are some crawlers from Eastern-Asian IP addresses that are copying the whole database to their own and ask later money for the books downloaded from Aleph. Some of these crawlers are probably stuck at some books and are re-downloading the books every second. On the other hand, if a download request came from the same IP-address only 2 times, it is possible that it was only by mistake. 
+
+3. As mentioned above, I excluded the downloads that were coming from TOR exists.
+
+When getting the data on downloads, I also exclueded the books with outlying prices. I set the thresholds from 1 dollar to 200 dollars. The threshold proved to be robust, as changing it did not change the results significantly.
+
+The analysis is two-fold. First, I will look at only the books and their attributes, while in the second part of the analysis I will include macro statistics of different countries. The latter will allow me to study the difference between developed and developing countries. 
+
+### Books
+
+After clearing the dataset, I checked, whether the downloaders for the most downloaded books with rent price can be assumed to be university students. I used the rent price as a proxy for books, that are primarly targeted for graduates. Amazon's website also describes this service as one made for college students [^amazon] . Students can rent in  two different ways: by renting the paper version, which is delivered by post and needs to be returned on time or renting the e-book version, what would allow them to read it on  e-book readers. The e-book will be made unavailable after the rental period is over. 
+
+[^amazon]: https://www.amazon.com/Rent-Textbooks/b?ie=UTF8&node=5657188011
+
+```{r, echo=FALSE, results = "asis"}
+stargazer(downloadtable, summary = FALSE, header = FALSE)
+```
+
+It can be seen, that these books are nearly exclusively relevant for University students or scholars. We can find books in the field of Physics (1, 2, 10), Philosophy (3, 9) or Engineering (5). Only 2 out of the 10 aforementioned books can be directly connected to outside of academy (4, 6) as they would be useful for professionals working in Information Technology. 
+These books were downloaded 400-600 times, which is a big number, because most of the books were dowloaded just a few times.
+
+```{r, results="asis", echo=FALSE}
+library(stargazer)
+stargazer(books[,2:4], header = FALSE, rownames=FALSE, covariate.labels = c("Rent price", "List price"))
+```
+
+The summary statistics show that the mean of the rent prices is less than the half of the mean of the list prices. The standard deviation of both type of prices are quite high, especially for rent prices. 
+
+The following graph show that the majority of the books were downloaded about 10- times. From this, we can see that there is demand towards the books, and the downloads were not just one-off.
+
+The plot shows the frequency of the number of downloads. 
+
+```{r, echo=FALSE, message=FALSE}
+print(frequency)
+```
+
+On the next graph, we can see the plots of the frequencies of the list and rent prices of the books. We see, that the rent prices are more concentrated, compared to the frequency of the list prices.
+
+```{r, echo=FALSE, message=FALSE}
+print(bg)
+```
+
+Now, look at the correlation between the different prices and number of downloads. The correlation between the number of downloads and rent price is `r cor(books$rentp,books$n)`. However, here all countries are included, yet the rent price is only available in the US. The correlation of the number of downloads and rent price in the US is `r cor(counts3[counts3$country=="United States",]$count,counts3[counts3$country=="United States",]$listp)`, which is still negative and close to the global value of correlation.
+The correlation between the list price is `r cor(books$listp,books$n)`. We can see that the price of the book and the times it was downloaded does not move together, as the correlation is close to 0.
+
+
+In order to check my assumptions from the correlation efficients, I ran a regression. As the distribution of both the prices and number of downloads were not normal, I used the log of all three variables. The coefficients of both regressions are really low. In the case of the (1) regression, the coeffecient means that, ceteris paribus, a 10% increase in the price of a book would mean 0.8% decrease in the number of downloads. Also the explanatory power of the regressions are really small, as I only used one dependent variable. 
+
+```{r, results='asis', echo=FALSE}
+stargazer(mod1, mod2,  header=FALSE, type='latex', covariate.labels = c("Rent price", "List price", "Constant"), dep.var.labels   = "Number of downloads")
+```
+
+The negative coefficient can seem counterintuitive, as this would mean that lower priced books are frequently downloaded. However, this can be due to the fact, that there are several books, that have really high prices but are only being downloaded just a few times. If the majority of price's of the textbooks are lower than this, this phenomenon can occur. I found that none of the DDC categories are outlying, so it is a basic trend, not a behavior towards different books.
+However, when including the extensions of the books, the rent price became non-significant but the coefficient of the PDF version showed, that my assumptions were correct and it significantly increases the number of downloads.
+
+## Downloaders
+
+### Dates of downloads
+
+I am also interested in the behavior of the downloaders as the dataset allows me to gain some insight about their habits. The dataset is from `r min(count_dates$day)` to `r max(count_dates$day)`. This means, I have data for more than 5 months of downloads. I plotted out the total number of downloads per day, to see if the data has any issues.  
+
+```{r, echo=FALSE, message=FALSE}
+day_plot
+```
+
+Besides two big drops in the number of downloads (the data provided came in 3 chunks and some days are missing) in November and January, the data seems to behave as expected. I think, these drops do not have a significant effect on my results, as besides these dates, the data still contains 5 months of good data. Moreover, both of the missing data is nearly exactly one week, which does not distort the observations.
+
+2 things can be seen instantly: 
+
+1. During the weekends (weekends have light red background) the number of downloads were lower than during the start of the week.
+
+2. After a sharp increase in downloads from Sunday to Monday, starting from Tuesdays there is a downward trend per week, with a break at Thursdays. Nearly every week has their highest number of downloads on Tuesdays.  
+
+The next graph shows the number of downloads per hour during the observed period. As it could be assumed, the number reaches its peak in the late-afternoon. This can be because students arrive at home at around that time and start to search for books that they would like to download.
+
+I checked for discrepancy in the data, by looking at the hour of downloads. The time in the dataset belongs to the server, which makes it harder to derive the overall behaviour per hour. However, the same trend can be seen, through all of the countries. Here, I included three countries. Germany is the closest to the server from these three countries and it shows an expected behavior: the number of downloads are small during the night and increase during the daytime.
+
+```{r, echo=FALSE, message=FALSE}
+hourplots
+```
+
+### Location of downloads
+
+After having a look at the time of the downloads, I now turn to the location of these downloads. The following map shows the top 50 IP-addresses, from where download requests are registered in the database. The blue points show the locations, which are identified as University IP-addresses. Moreover, a bigger dot represent more downloads from that IP-address. The top locations are on 4 continents, only Africa does not represent herself with big downloader country. 
+
+The locations correspond to a blog post by the administrators of Sci-Hub, on of the biggest scientific paper sharing website [^scihub] . They found that most of downloads are coming from developing countries : on the map, the biggest dots are from Asia. 
+
+[^scihub] : https://blog.datadryad.org/2016/04/28/sci-hub-stories/
+
+```{r, echo=FALSE, message=FALSE}
+mp
+```
+
+
+## Introducing country & book specifics
+
+In the first part of the data analysis, I only used the rent or list price of the books and their extensions. They were significant, but had really small effects, and the models had really low explanatory power due to the fact of missing independent variables.
+
+In this part of the thesis, I would like to introduce more regressors, that I hope will have significant effect on the number of downloads.
+
+The dependent variable is the same as in the previous regressions, the count of downloads per book. However, now I also aggregate on country level and use country attributes in order to deal with differences between different countries. 
+
+I chose this approach, because this way I can also include the books that were not downloaded. This is important, because people simultaneously decide which books they will download or not and leaving out the books with 0 downloads would not reflect their real decisions.
+
+In this approach, I included three country attributes for the observed countries: 
+
+* GDP per capita in purchasing power parity (PPP) in current USD,
+* Internet penetration (number of people using Internet per 100 people) and
+* GDP growth, as it can indicate, if a country is in a development state or not.
+
+
+I obtained both of this data from the database of the Worldbank(cite). The GDP PPP measures GDP per capita, normalized to a common consumer basket. The internet penetration and the GDP are closely moving together, the correlation is `r cor(log(gdp14$X2014), log(gdp14$internet), use = "complete.obs")`, as the richer countries have better infrastructure and possibilities to provide internet service throughout the country. 
+
+I also attached the classification of the books (DDC), as I think there is difference between the demand of religious or IT books. As DDC has 10 main classes, I made dummies for each 10 classes. My benchmark were the General and IT (0. class) books. 
+
+Before analyzing the data, I looked at the correlation between GDP and number of books downloaded by country. I found, that the correlation was `r cor(country$l_count, country$l_gdp)`, which is much higher than the correlation with the pricess of the books. As above, I used logarithms.
+
+Plotting the (log-)GDP and (log-)count of downloads shows, that developed countries download more. The developed countries have light blue dots.  
+
+```{r, echo=FALSE, message=FALSE}
+cor1
+```
+
+Looking at the correlation between the internet penetration shows an even higher correlation with `r cor(country$l_count, country$l_int)`. 
+
+```{r, echo=FALSE, message=FALSE}
+cor2
+```
+
+This shows, that downloading a book is not necesseraly because people do not have enough money to buy the textbooks. Countries with higher GDP have better education, students are most likely have easy access (especially in the "developed" countries on the graph) for books either through a library or by having enoguh money to buy it. When looking at the number of downloads divided by the population of a country (in millions), Southern- and Eastern-European countries are over-represented. In these countries, education changed a lot in the recent years and there was an impactful regime change. 
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+cor_pop
+```
+
+```{r, echo=FALSE, results='asis', message=FALSE}
+stargazer(count_pop, summary=FALSE, header=FALSE)
+```
+
+To see the exact effect of including the books with zero downloads, I ran a preliminary regressions, which I could use for comparison. 
+
+As I mentioned above including books with 0 downloads is necessary, as it reflects the real choices of the downloaders. However, with all of the non-downloaded books in the dataset there will be lot of excess zeroes for the counts of downloads. In this case, the data is not normally distributed (and because of the zeros, logarithm can not be used), so OLS regression would not give a good and reliable estimation. 
+
+Because of this, I will use a hurdle model. This type of regression allows for zeros and contains two estimations, which are in this case: 
+
+* Estimating if a book will be downloaded or not,
+* If the book was downloaded, estimate the effects of the independent variables on the number of downloads. 
+
+The hurdle model can be applied in this case, as it differentiates between two types of behavior. At first, it describes the behavior between choosing to download or not (a binomial regression with logit link) and then estimates the number of downloads. Because of the long time span, we can assume, that if there would be demand for a book from a country, there would be at least one download (This is an assumption, we should make to use the hurdle regression).
+
+The regressors in the two phase do not have to be the same ones. The expected number of downloads look like this:  
+
+$E(number of downloads)=P(not downloaded book)*0 + P(downloaded book)*E(downloaded book)$
+
+
+### Hurdle model and control regressions
+
+Before proceeding to the hurdle regression, I ran some basic OLS regressions, to compare the coefficients in the end. First, I only included the country's GDP to the regression and took all the downloads. 
+
+```{r, results="asis", echo=FALSE, message=FALSE}
+stargazer(reg_control,reg_control3, header = FALSE)
+```
+
+It can be seen, that the coefficient of the regression is positive. Because I used the logarithm of both the count of downloads and both the GDPs, the coefficient means, that a 10% increase in a country's GDP would boost the number of downloads by 6%. 
+
+To continue, I excluded the countries that only have few downloads (less than 50, which would mean on average less than 10 per month. I excluded 54 countries out of the 149 in the data), as they are not adding explanatory power to the models. In this model, the coefficient of the GDP was not significant, however, the coefficient of the intercept became significant.
+
+```{r, results="asis", echo=FALSE, message=FALSE}
+stargazer(reg_control2, header = FALSE)
+```
+
+I then added all of the downloaded books to the database with zero downloads for the countries, where it was not downloaded. This means, every book that had at least one download from the analyzed countries, is in the dataset 94 (number of countries) times, each time with a different country.
+
+As the rent prices are only available in the US, I also checked, whether there is a difference between the US and other countries specifics, but the results showed, that there is no significant difference between them. 
+
+After these regressions, I used the above described hurdle model. The estimation of the model can be seen in the following table. 
+
+
+```{r, results="asis",  echo=FALSE, message=FALSE}
+stargazer(modelHurdle, type='latex', zero.component = TRUE, header = FALSE)
+```
+
+First, have a look at the zero-hurdle part of the model. The coefficients of the regression show us, that a higher GDP increases the probability that a book will be downloaded in a country, while the rent price has no effect on this process. The different categories all except one don't have significantly higher chance to be downloaded than IT books, which is the benchmark. 
+At the regions, the benchmark is Australia and New Zealand and the majority of the other regions, that have a significant effect, have a higher chance to download a book. When looking at the interactions, between the regions and the GDP we can see, that a higher GDP would, ceteris paribus, lower the chances of a book to be downloaded. This is in line with Karaganis' paper (CITE), that the downloads are coming from the developing countries, as they are poorer than the developed ones.
+
+```{r, results="asis", echo=FALSE, message=FALSE}
+stargazer(modelHurdle, type='latex', header = FALSE)
+```
+
+Now look at the count part of the model. From the interactions we can see that the number of downloads usually increase, when a price of a book is higher, only in the 9th category (History) they decrease.
+The minus before the interactions of GDP and regions, however shed light on an interesting result. However, asa we could see in the first part of the model, people in poorer countries download with a higher probability, the number of downloads are actually lower. The explanation to this can be, that in poorer countries, more people are aware of the possibility to download books and use it. However, they downloads less books, than the people in richer countries, where fewer people download.
+
+```{r, results="asis", echo=FALSE}
+stargazer(expCoef)
+```
+
+This table shows, that the baseline odds of having a download for a book vs a zero download is 0.02. This odds is increased 1.18 times with 1% increase in GDP and 1.003 times with a 1% increase in rent price. (MORE needs to come here)
+
+
+# Summary and extensions
+
+
+
+# Appendix
+Regression with extensions:
+
+```{r, results='asis', echo=FALSE}
+stargazer(mod_l1, mod_l2, header = FALSE)
+```
+
+Hurdle regressions:
+
+```{r, results='asis', echo=FALSE}
+stargazer(modelHurdle)
+```
+
