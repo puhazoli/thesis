@@ -1,0 +1,105 @@
+---
+title: "The effect of  macro variables on textbook downloads"
+subtitle: "Analyzing 5 months of downloads from LibGen"
+author: "Zolt&aacute;n Puha"
+output:
+  pdf_document:
+    highlight: tango
+    number_sections: yes
+    toc: yes
+    fig_caption: yes
+    keep_tex: yes
+    includes:
+            in_header: header.tex
+bibliography: reserch.bib
+urlcolor: black
+linkcolor: black
+fontsize: 12pt
+geometry: margin = 1.2in
+
+abstract: "This thesis analyses download data obtained from one of the biggest online shadow library, LibGen. I only include textbooks in the analysed data. I research, whether price of the textbook or macro variables of different countries have effect on the number of downloads. I use regression analysis, using both OLS and hurdle regressions. I find that prices either have no or negative effect on downloads. A higher GDP, internet penetration or number of enrolled students into tertiary education all significantly increase the chance of downloads. " 
+keywords: "illegal downloading, LibGen, data analysis, behavioral data"
+---
+
+\newpage
+
+```{r child = 'litreview.Rmd'}
+```
+
+```{r child = 'models.Rmd'}
+```
+
+
+
+# Appendix
+
+_Data analysis:_
+I used Python 2.7 and MongoDB to build the dataset and tidy it, so it was ready for analysis. For analyzing and visualizing the data, I used R (version 3.3.1) and RStudio.
+
+_Data discrapancy_
+
+I checked for discrepancy in the data, by looking at the hour of downloads. The time in the dataset belongs to the server where the books are stored (Eastern-Europe), which makes it harder to derive the overall behavior per hour. However, the same trend can be seen through all of the countries. Here, I included three countries. Germany is the closest to the server from the three countries and it shows an expected behavior: the number of downloads are small during the night and increase during the daytime.
+
+```{r, echo=FALSE, message=FALSE, fig.cap="Number of downloads per hour per country. Times in own timezone"}
+print(hourplots)
+```
+
+_Regression with extensions_:
+
+```{r, results='asis', echo=FALSE}
+stargazer(mod_l1, mod_l2, header = FALSE, style = "qje", font.size = "tiny", float = TRUE, float.env = "table*")
+```
+
+_Regression with list price and DDC_:
+
+```{r, results='asis', echo=FALSE}
+stargazer(mod_ddc, header = FALSE, style = "qje", font.size = "tiny", float = TRUE, float.env = "table*", covariate.labels = c("List price", "DDC - 0",
+                                                                                                                               "DDC - 1",
+                                                                                                                               "DDC - 2",
+                                                                                                                               "DDC - 3",
+                                                                                                                               "DDC - 4",
+                                                                                                                               "DDC - 5",
+                                                                                                                               "DDC - 6",
+                                                                                                                               "DDC - 7",
+                                                                                                                               "DDC - 8",
+                                                                                                                               "DDC - 9",
+                                                                                                                               "List price*DDC - 1",
+                                                                                                                               "List price*DDC - 2",
+                                                                                                                               "List price*DDC - 3",
+                                                                                                                               "List price*DDC - 4",
+                                                                                                                               "List price*DDC - 5",
+                                                                                                                               "List price*DDC - 6",
+                                                                                                                               "List price*DDC - 7",
+                                                                                                                               "List price*DDC - 8",
+                                                                                                                               "List price*DDC - 9"))
+```
+
+
+
+_Regression for controlling for USA_: 
+```{r, results='asis', echo=FALSE}
+stargazer(reg_USAcontrol, header = FALSE, style = "qje", font.size = "small", float = TRUE, float.env = "table*", label = "usatable")
+```
+
+_Hurdle with regions_
+
+```{r, results="asis", echo=FALSE, message=FALSE}
+texreg(modelHurdle_region, float = TRUE, float.env = "table*", longtable = TRUE, dcolumn = TRUE, use.packages = FALSE, fontsize = "small", label ="hurdleregion")
+```
+
+_Hurdle with DDCs_
+
+```{r, results="asis", echo=FALSE, message=FALSE}
+texreg(modelHurdle_ddc, float = TRUE, float.env = "table*", longtable = TRUE, dcolumn = TRUE, use.packages = FALSE, fontsize = "small", label = "hurdleddc")
+```
+
+
+
+\newpage
+\blandscape
+```{r, results='asis', echo=FALSE}
+stargazer(books_most_dt[,1:4, with = FALSE], summary = FALSE, header = FALSE,  title = "Top 3 downloaded books per DDC category", column.sep.width = "3pt",  font.size = "tiny", rownames = FALSE, label= "mostbyddc")
+```
+\elandscape
+
+# References
